@@ -112,6 +112,11 @@ def one_hot_from_probabilities(probabilities):
     
     return one_hot
 
+#changes one hot to 1 to 6 labels
+def label_names_num(label):
+    labels = [1, 2, 3, 4, 5, 6]
+    return [labels[j] for j in range(len(labels)) if [i == 1 for i in label][j]][0]
+
 # Flattens images for input to models
 def data_transform(images):
     
@@ -121,7 +126,15 @@ def data_transform(images):
     transformed /= 255
     return transformed
 
-images, labels = get_batch("/archive/deepsat-sat6/X_train_sat6.csv", "/archive/deepsat-sat6/y_train_sat6.csv", 25)
+#gives accuracy score of predicted versus actual values
+def acc(pred, actual):
+    count = 0
+    for i in range(len(actual)):
+        if pred[i] == actual[i]:
+            count += 1
+    return float(count/len(pred))
+
+images, labels = get_batch("/archive/deepsat-sat6/X_train_sat6.csv", "/archive/deepsat-sat6/y_train_sat6.csv", 10000)
 
 display_images(images, labels, False)
 
@@ -348,7 +361,86 @@ X_train,X_test,y_train,y_test = train_test_split(Xnew, Y, test_size=0.2, random_
 #print("Precision Score " + str(accuracy_score(np.argmax(y_test,axis=1),y_pred)))
 #print(classification_report(new_labels,y_pred,target_names=['Building', 'Barren land', 'Trees', 'Grassland', 'Road', 'Water']))
 
+# changing the label identifiers to numbers number 0 to 5 (6 labels in total)
+images_flat = data_transform(images)
+label_flat =[]
+for item in labels:
+    label_flat.append(label_names_num(item))
+    
+target_names = ['building','barren_land','trees','grassland','road','water']
+from sklearn.model_selection import train_test_split
+Xtrain , Xtest, Ytrain, Ytest = train_test_split(images_flat, label_flat, test_size = .1, random_state=42)
 
+#SOFTMAX REGRESSION -
+
+from sklearn.linear_model import LogisticRegression
+#FIRST model
+softmax = LogisticRegression(random_state=42, 
+                               solver='sag', tol= 1e-5, max_iter = 700, verbose = False, 
+                               multi_class='multinomial')
+softmax.fit(Xtrain, Ytrain)
+#predicting the test data
+pred = softmax.predict(Xtest)
+#accuracy of first model
+print(metrics.classification_report(Ytest, pred, target_names = target_names))
+
+# SECOND model
+softmax1 = LogisticRegression(random_state=42, 
+                               solver='saga', tol= 1e-5, max_iter = 700, verbose = False, 
+                               multi_class='multinomial')
+#fitting the model
+softmax1.fit(Xtrain, Ytrain)
+#predicting the test data
+pred1 = softmax1.predict(Xtest)
+print(metrics.classification_report(Ytest, pred1, target_names = target_names))
+
+# THIRD model
+softmax2 = LogisticRegression(random_state=42, 
+                               solver='sag', tol= 1e-5, max_iter = 300, verbose = False, 
+                               multi_class='multinomial')
+#fitting the model
+softmax2.fit(Xtrain, Ytrain)
+#predicting the test data
+pred2 = softmax2.predict(Xtest)
+print(metrics.classification_report(Ytest, pred2, target_names = target_names))
+
+#FOURTH model
+softmax3 = LogisticRegression(random_state=42, 
+                               solver='saga', tol= 1e-5, max_iter = 300, verbose = False, 
+                               multi_class='multinomial', penalty = 'l1')
+#fitting the model
+softmax3.fit(Xtrain, Ytrain)
+#predicting the test data
+pred3 = softmax3.predict(Xtest)
+print(metrics.classification_report(Ytest, pred3, target_names = target_names))
+
+# RANDOM FOREST
+
+#FIRST model
+from sklearn import tree
+Dt = tree.DecisionTreeClassifier()
+Dt.fit(Xtrain,Ytrain)
+tree_pred = Dt.predict(Xtest)
+print(metrics.classification_report(Ytest, tree_pred, target_names = target_names))
+
+#SECOND model
+from sklearn.ensemble import RandomForestClassifier
+rt = RandomForestClassifier(n_estimators = 100, random_state=0)
+rt.fit(Xtrain, Ytrain)
+rand_pred = rt.predict(Xtest)
+print(metrics.classification_report(Ytest, rand_pred, target_names = target_names))
+
+#THIRD model
+rt1 = RandomForestClassifier(n_estimators = 200, random_state=0)
+rt1.fit(Xtrain, Ytrain)
+rand_pred1 = rt1.predict(Xtest)
+print(metrics.classification_report(Ytest, rand_pred1, target_names = target_names))
+
+#FOURTH model
+rt2 = RandomForestClassifier(n_estimators = 200, random_state=0, criterion ='gini')
+rt2.fit(Xtrain, Ytrain)
+rand_pred2 = rt2.predict(Xtest)
+print(metrics.classification_report(Ytest, rand_pred2, target_names = target_names))
 
 
 
