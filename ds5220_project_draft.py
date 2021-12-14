@@ -273,5 +273,8 @@ for i in range(6):
 # print(accuracy_score(y_test, one_hot_from_probabilities(y_pred_cnn)))
 # print(accuracy_score(y_test, one_hot_from_probabilities(y_pred_cnn_balanced)))
 
+### KNN and GNB
+
+
 
 
