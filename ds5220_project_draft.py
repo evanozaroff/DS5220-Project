@@ -9,25 +9,9 @@ Original file is located at
 # Setup
 """
 
-# This Python 3 environment comes with many helpful analytics libraries installed
-# It is defined by the kaggle/python Docker image: https://github.com/kaggle/docker-python
-# For example, here's several helpful packages to load
-
 import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import kaggle
-
-# Input data files are available in the read-only "../input/" directory
-# For example, running this (by clicking run or pressing Shift+Enter) will list all files under the input directory
-
-# import os
-# for dirname, _, filenames in os.walk('/kaggle/input'):
-#     for filename in filenames:
-#         print(os.path.join(dirname, filename))
-
-# You can write up to 20GB to the current directory (/kaggle/working/) that gets preserved as output when you create a version using "Save & Run All" 
-# You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
-
 import csv
 import matplotlib.pyplot as plt
 import math
@@ -157,139 +141,139 @@ for i in range(6):
     l = ['building', 'barren_land','trees', 'grassland', 'road', 'water']
     print(str(l[i]) + ":\t" + str(round(sum(y_tst[:, i]) / l_y_tst * 100, 1)) + "%")
 
-# """# Neural Network Models"""
-#
-# # Get train set
-# X_train_pre, y_train = get_batch("/archive/deepsat-sat6/X_train_sat6.csv", "/archive/deepsat-sat6/y_train_sat6.csv", 10000)
-# X_train = data_transform(X_train_pre)
-#
-# # Get test set
-# X_test_pre, y_test = get_batch("/archive/deepsat-sat6/X_test_sat6.csv", "/archive/deepsat-sat6/y_test_sat6.csv", 5000)
-# X_test = data_transform(X_test_pre)
-#
-# # Assemble and compile models
-# nn_wider = Sequential()
-# nn_wider.add(Dense(units=512,activation='relu', input_shape=(IMAGE_SIZE,)))
-# nn_wider.add(Dense(units=512,activation='relu',))
-# nn_wider.add(Dense(units=6,activation='softmax',))
-# nn_wider.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
-#
-# nn_deeper = Sequential()
-# nn_deeper.add(Dense(units=256,activation='relu',input_shape=(IMAGE_SIZE,)))
-# nn_deeper.add(Dense(units=256,activation='relu',))
-# nn_deeper.add(Dense(units=256, activation='relu',))
-# nn_deeper.add(Dense(units=256, activation='relu',))
-# nn_deeper.add(Dense(units=6, activation='softmax',))
-# nn_deeper.compile(loss='categorical_crossentropy',optimizer='sgd',metrics=['accuracy'])
-#
-# cnn = Sequential()
-# cnn.add(Conv2D(16, kernel_size=3, activation='relu', input_shape=IMAGE_SHAPE))
-# cnn.add(Conv2D(32, kernel_size=3, activation='relu'))
-# cnn.add(MaxPooling2D(pool_size=2))
-# cnn.add(Dropout(0.5))
-# cnn.add(Conv2D(32, kernel_size=3, activation='relu'))
-# cnn.add(Conv2D(64, kernel_size=3, activation='relu'))
-# cnn.add(MaxPooling2D(pool_size=2))
-# cnn.add(Dropout(0.5))
-# cnn.add(Flatten())
-# cnn.add(Dense(128, activation='relu'))
-# cnn.add(Dropout(0.5))
-# cnn.add(Dense(6, activation='softmax'))
-# cnn.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-#
-# # Assemble and compile models (class balanced)
-# nn_wider_balanced = Sequential()
-# nn_wider_balanced.add(Dense(units=512,activation='relu', input_shape=(IMAGE_SIZE,)))
-# nn_wider_balanced.add(Dense(units=512,activation='relu',))
-# nn_wider_balanced.add(Dense(units=6,activation='softmax',))
-# nn_wider_balanced.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
-#
-# nn_deeper_balanced = Sequential()
-# nn_deeper_balanced.add(Dense(units=256,activation='relu',input_shape=(IMAGE_SIZE,)))
-# nn_deeper_balanced.add(Dense(units=256,activation='relu',))
-# nn_deeper_balanced.add(Dense(units=256, activation='relu',))
-# nn_deeper_balanced.add(Dense(units=256, activation='relu',))
-# nn_deeper_balanced.add(Dense(units=6, activation='softmax',))
-# nn_deeper_balanced.compile(loss='categorical_crossentropy',optimizer='sgd',metrics=['accuracy'])
-#
-# cnn_balanced = Sequential()
-# cnn_balanced.add(Conv2D(16, kernel_size=3, activation='relu', input_shape=IMAGE_SHAPE))
-# cnn_balanced.add(Conv2D(32, kernel_size=3, activation='relu'))
-# cnn_balanced.add(MaxPooling2D(pool_size=2))
-# cnn_balanced.add(Dropout(0.5))
-# cnn_balanced.add(Conv2D(32, kernel_size=3, activation='relu'))
-# cnn_balanced.add(Conv2D(64, kernel_size=3, activation='relu'))
-# cnn_balanced.add(MaxPooling2D(pool_size=2))
-# cnn_balanced.add(Dropout(0.5))
-# cnn_balanced.add(Flatten())
-# cnn_balanced.add(Dense(128, activation='relu'))
-# cnn_balanced.add(Dropout(0.5))
-# cnn_balanced.add(Dense(6, activation='softmax'))
-# cnn_balanced.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-#
-# # Train models
-# history_wider = nn_wider.fit(X_train, y_train, epochs = 15, verbose=True, validation_split=0.1)
-# history_deeper = nn_deeper.fit(X_train, y_train, epochs = 15, verbose=True, validation_split=0.1)
-# history_cnn = cnn.fit(X_train_pre, y_train, epochs = 15, verbose=True, validation_split=0.1)
-#
-# # Train models (class balanced)
-# class_weights = class_weight.compute_class_weight('balanced', np.unique(np.argmax(y_train, axis=1)), np.argmax(y_train, axis=1))
-# d_class_weights = dict(enumerate(class_weights))
-#
-# history_wider_balanced = nn_wider_balanced.fit(X_train, y_train, epochs = 15, verbose=True, validation_split=0.1, class_weight=d_class_weights)
-# history_deeper_balanced = nn_deeper_balanced.fit(X_train, y_train, epochs = 15, verbose=True, validation_split=0.1, class_weight=d_class_weights)
-# history_cnn_balanced = cnn_balanced.fit(X_train_pre, y_train, epochs = 15, verbose=True, validation_split=0.1, class_weight=d_class_weights)
-#
-# models = {"Wider NN":history_wider,
-#           "Wider NN Class Balanced":history_wider_balanced,
-#           "Deeper NN":history_deeper,
-#           "Deeper NN Class Balanced":history_deeper_balanced,
-#           "CNN":history_cnn,
-#           "CNN Class Balanced":history_cnn_balanced}
-#
-# for model in models:
-#     plt.plot(models[model].history['accuracy'])
-#     plt.plot(models[model].history['val_accuracy'])
-#     plt.title(str(model))
-#     plt.xlabel('epoch')
-#     plt.ylabel('accuracy')
-#     plt.legend(['train', 'val'], loc='upper left')
-#     plt.show()
-#
-# # Get predictions
-# y_pred_wider = nn_wider.predict(X_test)
-# y_pred_wider_balanced = nn_wider_balanced.predict(X_test)
-# y_pred_deeper = nn_deeper.predict(X_test)
-# y_pred_deeper_balanced = nn_deeper_balanced.predict(X_test)
-# y_pred_cnn = cnn.predict(X_test_pre)
-# y_pred_cnn_balanced = cnn_balanced.predict(X_test_pre)
-#
-# print("Report for wider neural network:")
-# print(classification_report(y_test, one_hot_from_probabilities(y_pred_wider), target_names=['building', 'barren_land','trees', 'grassland', 'road', 'water']))
-# print("\nReport for wider neural network (balanced):")
-# print(classification_report(y_test, one_hot_from_probabilities(y_pred_wider_balanced), target_names=['building', 'barren_land','trees', 'grassland', 'road', 'water']))
-# print("\nReport for deeper neural network:")
-# print(classification_report(y_test, one_hot_from_probabilities(y_pred_deeper), target_names=['building', 'barren_land','trees', 'grassland', 'road', 'water']))
-# print("\nReport for deeper neural network (balanced):")
-# print(classification_report(y_test, one_hot_from_probabilities(y_pred_deeper_balanced), target_names=['building', 'barren_land','trees', 'grassland', 'road', 'water']))
-# print("\nReport for convolutional neural network:")
-# print(classification_report(y_test, one_hot_from_probabilities(y_pred_cnn), target_names=['building', 'barren_land','trees', 'grassland', 'road', 'water']))
-# print("\nReport for convolutional neural network (balanced):")
-# print(classification_report(y_test, one_hot_from_probabilities(y_pred_cnn_balanced), target_names=['building', 'barren_land','trees', 'grassland', 'road', 'water']))
-#
-# multilabel_confusion_matrix(y_test, y_pred_wider, 'Wider NN')
-# multilabel_confusion_matrix(y_test, y_pred_wider_balanced, 'Wider NN Class Balanced')
-# multilabel_confusion_matrix(y_test, y_pred_deeper, 'Deeper NN')
-# multilabel_confusion_matrix(y_test, y_pred_deeper_balanced, 'Deeper NN Class Balanced')
-# multilabel_confusion_matrix(y_test, y_pred_cnn, 'CNN')
-# multilabel_confusion_matrix(y_test, y_pred_cnn_balanced, 'CNN Class Balanced')
-#
-# print(accuracy_score(y_test, one_hot_from_probabilities(y_pred_wider)))
-# print(accuracy_score(y_test, one_hot_from_probabilities(y_pred_wider_balanced)))
-# print(accuracy_score(y_test, one_hot_from_probabilities(y_pred_deeper)))
-# print(accuracy_score(y_test, one_hot_from_probabilities(y_pred_deeper_balanced)))
-# print(accuracy_score(y_test, one_hot_from_probabilities(y_pred_cnn)))
-# print(accuracy_score(y_test, one_hot_from_probabilities(y_pred_cnn_balanced)))
+"""# Neural Network Models"""
+
+# Get train set
+X_train_pre, y_train = get_batch("/archive/deepsat-sat6/X_train_sat6.csv", "/archive/deepsat-sat6/y_train_sat6.csv", 10000)
+X_train = data_transform(X_train_pre)
+
+# Get test set
+X_test_pre, y_test = get_batch("/archive/deepsat-sat6/X_test_sat6.csv", "/archive/deepsat-sat6/y_test_sat6.csv", 5000)
+X_test = data_transform(X_test_pre)
+
+# Assemble and compile models
+nn_wider = Sequential()
+nn_wider.add(Dense(units=512,activation='relu', input_shape=(IMAGE_SIZE,)))
+nn_wider.add(Dense(units=512,activation='relu',))
+nn_wider.add(Dense(units=6,activation='softmax',))
+nn_wider.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
+
+nn_deeper = Sequential()
+nn_deeper.add(Dense(units=256,activation='relu',input_shape=(IMAGE_SIZE,)))
+nn_deeper.add(Dense(units=256,activation='relu',))
+nn_deeper.add(Dense(units=256, activation='relu',))
+nn_deeper.add(Dense(units=256, activation='relu',))
+nn_deeper.add(Dense(units=6, activation='softmax',))
+nn_deeper.compile(loss='categorical_crossentropy',optimizer='sgd',metrics=['accuracy'])
+
+cnn = Sequential()
+cnn.add(Conv2D(16, kernel_size=3, activation='relu', input_shape=IMAGE_SHAPE))
+cnn.add(Conv2D(32, kernel_size=3, activation='relu'))
+cnn.add(MaxPooling2D(pool_size=2))
+cnn.add(Dropout(0.5))
+cnn.add(Conv2D(32, kernel_size=3, activation='relu'))
+cnn.add(Conv2D(64, kernel_size=3, activation='relu'))
+cnn.add(MaxPooling2D(pool_size=2))
+cnn.add(Dropout(0.5))
+cnn.add(Flatten())
+cnn.add(Dense(128, activation='relu'))
+cnn.add(Dropout(0.5))
+cnn.add(Dense(6, activation='softmax'))
+cnn.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+# Assemble and compile models (class balanced)
+nn_wider_balanced = Sequential()
+nn_wider_balanced.add(Dense(units=512,activation='relu', input_shape=(IMAGE_SIZE,)))
+nn_wider_balanced.add(Dense(units=512,activation='relu',))
+nn_wider_balanced.add(Dense(units=6,activation='softmax',))
+nn_wider_balanced.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
+
+nn_deeper_balanced = Sequential()
+nn_deeper_balanced.add(Dense(units=256,activation='relu',input_shape=(IMAGE_SIZE,)))
+nn_deeper_balanced.add(Dense(units=256,activation='relu',))
+nn_deeper_balanced.add(Dense(units=256, activation='relu',))
+nn_deeper_balanced.add(Dense(units=256, activation='relu',))
+nn_deeper_balanced.add(Dense(units=6, activation='softmax',))
+nn_deeper_balanced.compile(loss='categorical_crossentropy',optimizer='sgd',metrics=['accuracy'])
+
+cnn_balanced = Sequential()
+cnn_balanced.add(Conv2D(16, kernel_size=3, activation='relu', input_shape=IMAGE_SHAPE))
+cnn_balanced.add(Conv2D(32, kernel_size=3, activation='relu'))
+cnn_balanced.add(MaxPooling2D(pool_size=2))
+cnn_balanced.add(Dropout(0.5))
+cnn_balanced.add(Conv2D(32, kernel_size=3, activation='relu'))
+cnn_balanced.add(Conv2D(64, kernel_size=3, activation='relu'))
+cnn_balanced.add(MaxPooling2D(pool_size=2))
+cnn_balanced.add(Dropout(0.5))
+cnn_balanced.add(Flatten())
+cnn_balanced.add(Dense(128, activation='relu'))
+cnn_balanced.add(Dropout(0.5))
+cnn_balanced.add(Dense(6, activation='softmax'))
+cnn_balanced.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+# Train models
+history_wider = nn_wider.fit(X_train, y_train, epochs = 15, verbose=True, validation_split=0.1)
+history_deeper = nn_deeper.fit(X_train, y_train, epochs = 15, verbose=True, validation_split=0.1)
+history_cnn = cnn.fit(X_train_pre, y_train, epochs = 15, verbose=True, validation_split=0.1)
+
+# Train models (class balanced)
+class_weights = class_weight.compute_class_weight('balanced', np.unique(np.argmax(y_train, axis=1)), np.argmax(y_train, axis=1))
+d_class_weights = dict(enumerate(class_weights))
+
+history_wider_balanced = nn_wider_balanced.fit(X_train, y_train, epochs = 15, verbose=True, validation_split=0.1, class_weight=d_class_weights)
+history_deeper_balanced = nn_deeper_balanced.fit(X_train, y_train, epochs = 15, verbose=True, validation_split=0.1, class_weight=d_class_weights)
+history_cnn_balanced = cnn_balanced.fit(X_train_pre, y_train, epochs = 15, verbose=True, validation_split=0.1, class_weight=d_class_weights)
+
+models = {"Wider NN":history_wider,
+          "Wider NN Class Balanced":history_wider_balanced,
+          "Deeper NN":history_deeper,
+          "Deeper NN Class Balanced":history_deeper_balanced,
+          "CNN":history_cnn,
+          "CNN Class Balanced":history_cnn_balanced}
+
+for model in models:
+    plt.plot(models[model].history['accuracy'])
+    plt.plot(models[model].history['val_accuracy'])
+    plt.title(str(model))
+    plt.xlabel('epoch')
+    plt.ylabel('accuracy')
+    plt.legend(['train', 'val'], loc='upper left')
+    plt.show()
+
+# Get predictions
+y_pred_wider = nn_wider.predict(X_test)
+y_pred_wider_balanced = nn_wider_balanced.predict(X_test)
+y_pred_deeper = nn_deeper.predict(X_test)
+y_pred_deeper_balanced = nn_deeper_balanced.predict(X_test)
+y_pred_cnn = cnn.predict(X_test_pre)
+y_pred_cnn_balanced = cnn_balanced.predict(X_test_pre)
+
+print("Report for wider neural network:")
+print(classification_report(y_test, one_hot_from_probabilities(y_pred_wider), target_names=['building', 'barren_land','trees', 'grassland', 'road', 'water']))
+print("\nReport for wider neural network (balanced):")
+print(classification_report(y_test, one_hot_from_probabilities(y_pred_wider_balanced), target_names=['building', 'barren_land','trees', 'grassland', 'road', 'water']))
+print("\nReport for deeper neural network:")
+print(classification_report(y_test, one_hot_from_probabilities(y_pred_deeper), target_names=['building', 'barren_land','trees', 'grassland', 'road', 'water']))
+print("\nReport for deeper neural network (balanced):")
+print(classification_report(y_test, one_hot_from_probabilities(y_pred_deeper_balanced), target_names=['building', 'barren_land','trees', 'grassland', 'road', 'water']))
+print("\nReport for convolutional neural network:")
+print(classification_report(y_test, one_hot_from_probabilities(y_pred_cnn), target_names=['building', 'barren_land','trees', 'grassland', 'road', 'water']))
+print("\nReport for convolutional neural network (balanced):")
+print(classification_report(y_test, one_hot_from_probabilities(y_pred_cnn_balanced), target_names=['building', 'barren_land','trees', 'grassland', 'road', 'water']))
+
+multilabel_confusion_matrix(y_test, y_pred_wider, 'Wider NN')
+multilabel_confusion_matrix(y_test, y_pred_wider_balanced, 'Wider NN Class Balanced')
+multilabel_confusion_matrix(y_test, y_pred_deeper, 'Deeper NN')
+multilabel_confusion_matrix(y_test, y_pred_deeper_balanced, 'Deeper NN Class Balanced')
+multilabel_confusion_matrix(y_test, y_pred_cnn, 'CNN')
+multilabel_confusion_matrix(y_test, y_pred_cnn_balanced, 'CNN Class Balanced')
+
+print(accuracy_score(y_test, one_hot_from_probabilities(y_pred_wider)))
+print(accuracy_score(y_test, one_hot_from_probabilities(y_pred_wider_balanced)))
+print(accuracy_score(y_test, one_hot_from_probabilities(y_pred_deeper)))
+print(accuracy_score(y_test, one_hot_from_probabilities(y_pred_deeper_balanced)))
+print(accuracy_score(y_test, one_hot_from_probabilities(y_pred_cnn)))
+print(accuracy_score(y_test, one_hot_from_probabilities(y_pred_cnn_balanced)))
 
 ### KNN and GNB
 X, Y = get_batch("X_test_sat6.csv", "y_test_sat6.csv", 5000)
@@ -449,6 +433,3 @@ rt2 = RandomForestClassifier(n_estimators = 200, random_state=0, criterion ='gin
 rt2.fit(Xtrain, Ytrain)
 rand_pred2 = rt2.predict(Xtest)
 print(metrics.classification_report(Ytest, rand_pred2, target_names = target_names))
-
-
-
