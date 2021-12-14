@@ -31,9 +31,12 @@ import kaggle
 import csv
 import matplotlib.pyplot as plt
 import math
-from sklearn.metrics import classification_report, accuracy_score
+from sklearn.metrics import classification_report, accuracy_score, log_loss
 from sklearn.utils import class_weight
 from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.naive_bayes import GaussianNB
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, Flatten, Activation, Dropout, MaxPooling2D
 import tensorflow
