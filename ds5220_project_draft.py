@@ -40,6 +40,7 @@ from sklearn.naive_bayes import GaussianNB
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, Flatten, Activation, Dropout, MaxPooling2D
 import tensorflow
+import time
 
 IMAGE_SHAPE = 28, 28, 4
 IMAGE_SIZE = 28 * 28 * 4
@@ -291,79 +292,82 @@ for i in range(6):
 # print(accuracy_score(y_test, one_hot_from_probabilities(y_pred_cnn_balanced)))
 
 ### KNN and GNB
-X, Y = get_batch("/archive/deepsat-sat6/X_test_sat6.csv", "/archive/deepsat-sat6/y_test_sat6.csv", 5000
-                )
-Xnew = NN_data_transform(X)
+X, Y = get_batch("X_test_sat6.csv", "y_test_sat6.csv", 5000)
+Xnew = data_transform(X)
 X_train,X_test,y_train,y_test = train_test_split(Xnew, Y, test_size=0.2, random_state=12345)
 
 #for loop to determine the best k value 
-#for i in range(1,25):
-    #KNN = KNeighborsClassifier(n_neighbors=i)
-    #KNN.fit(X_train,y_train)
-    #y_pred = KNN.predict(X_test)
-    #print("k value: " +str(i) + " accuracy score: " + str(accuracy_score(y_test,y_pred)))
+for i in range(1,25):
+    KNN = KNeighborsClassifier(n_neighbors=i)
+    KNN.fit(X_train,y_train)
+    y_pred = KNN.predict(X_test)
+    print("k value: " +str(i) + " accuracy score: " + str(accuracy_score(y_test,y_pred)))
 
 #Code to determine what weightage paramater works the best
 
-#KNNEqual = KNeighborsClassifier(n_neighbors=19,p=1)
-#KNNEqual.fit(X_train,y_train)
-#y_pred = KNNEqual.predict(X_test)
-#print("Results for points having equal weight on the classification model:")
-#print("Precision Score " + str(accuracy_score(y_test,y_pred)))
-#print(classification_report(y_test,y_pred,target_names=['Building', 'Barren land', 'Trees', 'Grassland', 'Road', 'Water'],zero_division=0))
-#print(" ")
+KNNEqual = KNeighborsClassifier(n_neighbors=23,p=1)
+KNNEqual.fit(X_train,y_train)
+y_pred = KNNEqual.predict(X_test)
+print("Results for points having equal weight on the classification model:")
+print("Precision Score " + str(accuracy_score(y_test,y_pred)))
+print(classification_report(y_test,y_pred,target_names=['Building', 'Barren land', 'Trees', 'Grassland', 'Road', 'Water'],zero_division=0))
+print(" ")
 
-#KNNDistance = KNeighborsClassifier(n_neighbors=19, weights = 'distance',p=1)
-#KNNDistance.fit(X_train,y_train)
-#y_pred = KNNDistance.predict(X_test)
-#print("Results for points having weight proportionate to distance on the classification model:")
-#print("Precision Score " + str(accuracy_score(y_test,y_pred)))
-#print(classification_report(y_test,y_pred,target_names=['Building', 'Barren land', 'Trees', 'Grassland', 'Road', 'Water'],zero_division=0))
-#print(" ")
+KNNDistance = KNeighborsClassifier(n_neighbors=23, weights = 'distance',p=1)
+KNNDistance.fit(X_train,y_train)
+y_pred = KNNDistance.predict(X_test)
+print("Results for points having weight proportionate to distance on the classification model:")
+print("Precision Score " + str(accuracy_score(y_test,y_pred)))
+print(classification_report(y_test,y_pred,target_names=['Building', 'Barren land', 'Trees', 'Grassland', 'Road', 'Water'],zero_division=0))
+print(" ")
+
 #Code to determine what distance calculation is best
 
 #L2 distance
-#KNN1 = KNeighborsClassifier(n_neighbors=19,weights = 'distance',p=2)
-#KNN1.fit(X_train,y_train)
-#y_pred = KNN1.predict(X_test)
-#print("Data for L2 distance")
-#print("Precision Score " + str(accuracy_score(y_test,y_pred)))
-#print(classification_report(y_test,y_pred,target_names=['Building', 'Barren land', 'Trees', 'Grassland', 'Road', 'Water'],zero_division=0))
-#print(" ")
+KNNL2 = KNeighborsClassifier(n_neighbors=23,weights = 'distance',p=2)
+KNNL2.fit(X_train,y_train)
+y_pred = KNNL2.predict(X_test)
+print("Data for L2 distance")
+print("Precision Score " + str(accuracy_score(y_test,y_pred)))
+print(classification_report(y_test,y_pred,target_names=['Building', 'Barren land', 'Trees', 'Grassland', 'Road', 'Water'],zero_division=0))
+print(" ")
 
-#KNN1 = KNeighborsClassifier(n_neighbors=19,weights = 'distance',p=1)
-#KNN1.fit(X_train,y_train)
-#y_pred =KNN1.predict(X_test)
-#print("Data for L1 distance")
-#print("Precision Score " + str(accuracy_score(y_test,y_pred)))
-#print("Log Loss " + str(log_loss(y_test,y_pred)))
-#print(classification_report(y_test,y_pred,target_names=['Building', 'Barren land', 'Trees', 'Grassland', 'Road', 'Water'],zero_division=0))
-#print(" ")
+KNNL1 = KNeighborsClassifier(n_neighbors=23,weights = 'distance',p=1)
+KNNL1.fit(X_train,y_train)
+y_pred =KNNL1.predict(X_test)
+print("Data for L1 distance")
+print("Precision Score " + str(accuracy_score(y_test,y_pred)))
+print("Log Loss " + str(log_loss(y_test,y_pred)))
+print(classification_report(y_test,y_pred,target_names=['Building', 'Barren land', 'Trees', 'Grassland', 'Road', 'Water'],zero_division=0))
+print(" ")
 
 #Time plot to demonstrate program inefficiency 
 
-#timeList = []
-#size = [500,1000,2500,5000,7500,10000,12500,15000] #data size
-#for i in range(len(size)):
-    #X, Y = get_batch("/kaggle/input/deepsat-sat6/X_train_sat6.csv", "/kaggle/input/deepsat-sat6/y_train_sat6.csv", (size[i]))
-    #Xnew = NN_data_transform(X)
-    #X_train,X_test,y_train,y_test = train_test_split(Xnew, Y, test_size=0.2, random_state=12345)
-    #start_time = time.time()
-    #KNN2 = KNeighborsClassifier(n_neighbors=5,weights = 'distance',p=1)
-    #KNN2.fit(X_train,y_train)
-    #y_pred =KNN2.predict(X_test)
-    #timeList.append(time.time() - start_time)
-#plt.scatter(timeList, size, marker='o')
+timeList = [] 
+size = [100,500,1000,1500,2500,3500,5000] #data size
+for i in range(len(size)):
+    X, Y = get_batch("X_test_sat6.csv", "y_test_sat6.csv", size[i])
+    Xnew = data_transform(X)
+    X_train,X_test,y_train,y_test = train_test_split(Xnew, Y, test_size=0.2, random_state=12345)
+    start_time = time.time()
+    KNN2 = KNeighborsClassifier(n_neighbors=5,weights = 'distance',p=1)
+    KNN2.fit(X_train,y_train)
+    y_pred =KNN2.predict(X_test)
+    timeList.append(time.time() - start_time)
+plt.scatter(timeList, size, marker='o')
+plt.show()
 
 #GNB model
-#clf1 = GaussianNB()
-#class_labels = np.argmax(y_train, axis=1) 
-#clf1.fit(X_train, class_labels)
-#new_labels = np.argmax(y_test,axis=1)
-#y_pred = clf1.predict(X_test)
-#print("Gaussian Naive Bayes results:")
-#print("Precision Score " + str(accuracy_score(np.argmax(y_test,axis=1),y_pred)))
-#print(classification_report(new_labels,y_pred,target_names=['Building', 'Barren land', 'Trees', 'Grassland', 'Road', 'Water']))
+clf1 = GaussianNB()
+class_labels = np.argmax(y_train, axis=1) 
+clf1.fit(X_train, class_labels)
+new_labels = np.argmax(y_test,axis=1)
+y_pred = clf1.predict(X_test)
+print("Gaussian Naive Bayes results:")
+print("Precision Score " + str(accuracy_score(np.argmax(y_test,axis=1),y_pred)))
+print(classification_report(new_labels,y_pred,target_names=['Building', 'Barren land', 'Trees', 'Grassland', 'Road', 'Water']))
+
+
 
 # changing the label identifiers to numbers number 0 to 5 (6 labels in total)
 images_flat = data_transform(images)
