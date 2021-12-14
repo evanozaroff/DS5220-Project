@@ -287,7 +287,7 @@ for i in range(6):
 # print(accuracy_score(y_test, one_hot_from_probabilities(y_pred_cnn_balanced)))
 
 ### KNN and GNB
-X, Y = get_batch("/kaggle/input/deepsat-sat6/X_train_sat6.csv", "/kaggle/input/deepsat-sat6/y_train_sat6.csv", 5000
+X, Y = get_batch("/archive/deepsat-sat6/X_test_sat6.csv", "/archive/deepsat-sat6/y_test_sat6.csv", 5000
                 )
 Xnew = NN_data_transform(X)
 X_train,X_test,y_train,y_test = train_test_split(Xnew, Y, test_size=0.2, random_state=12345)
